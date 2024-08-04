@@ -8,13 +8,27 @@ function saveQuotes() {
   localStorage.setItem('quotes', JSON.stringify(quotes));
 }
 
-function showRandomQuote() {
-  const randomIndex = Math.floor(Math.random() * quotes.length);
-  const selectedQuote = quotes[randomIndex];
-  sessionStorage.setItem('lastViewedQuote', JSON.stringify(selectedQuote));
+function saveLastSelectedCategory(category) {
+  localStorage.setItem('lastSelectedCategory', category);
+}
 
-  const quoteDisplay = document.getElementById('quoteDisplay');
-  quoteDisplay.innerHTML = `<p>${selectedQuote.text}</p><p><em>Category: ${selectedQuote.category}</em></p>`;
+function getLastSelectedCategory() {
+  return localStorage.getItem('lastSelectedCategory') || 'all';
+}
+
+function showRandomQuote() {
+  const filteredQuotes = getFilteredQuotes();
+  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+  const selectedQuote = filteredQuotes[randomIndex];
+
+  if (selectedQuote) {
+    sessionStorage.setItem('lastViewedQuote', JSON.stringify(selectedQuote));
+    const quoteDisplay = document.getElementById('quoteDisplay');
+    quoteDisplay.innerHTML = `<p>${selectedQuote.text}</p><p><em>Category: ${selectedQuote.category}</em></p>`;
+  } else {
+    const quoteDisplay = document.getElementById('quoteDisplay');
+    quoteDisplay.innerHTML = `<p>No quotes available for the selected category.</p>`;
+  }
 }
 
 function addQuote() {
@@ -25,6 +39,7 @@ function addQuote() {
     const newQuote = { text: newQuoteText, category: newQuoteCategory };
     quotes.push(newQuote);
     saveQuotes();
+    populateCategoryFilter();
     alert('New quote added!');
   } else {
     alert('Please enter both quote text and category.');
@@ -61,23 +76,4 @@ function exportToJsonFile() {
   const downloadUrl = URL.createObjectURL(dataBlob);
   const downloadLink = document.createElement('a');
   downloadLink.href = downloadUrl;
-  downloadLink.download = 'quotes.json';
-  downloadLink.click();
-}
-
-function importFromJsonFile(event) {
-  const fileReader = new FileReader();
-  fileReader.onload = function(event) {
-    const importedQuotes = JSON.parse(event.target.result);
-    quotes.push(...importedQuotes);
-    saveQuotes();
-    alert('Quotes imported successfully!');
-  };
-  fileReader.readAsText(event.target.files[0]);
-}
-
-document.getElementById('newQuote').addEventListener('click', showRandomQuote);
-document.getElementById('exportJson').addEventListener('click', exportToJsonFile);
-
-createAddQuoteForm();
-showRandomQuote();
+  downloadLink.download = 'quotes
