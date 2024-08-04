@@ -39,14 +39,14 @@ function addQuote() {
     const newQuote = { text: newQuoteText, category: newQuoteCategory };
     quotes.push(newQuote);
     saveQuotes();
-    populateCategoryFilter();
+    populateCategories();
     alert('New quote added!');
   } else {
     alert('Please enter both quote text and category.');
   }
 }
 
-function populateCategoryFilter() {
+function populateCategories() {
   const categoryFilter = document.getElementById('categoryFilter');
   categoryFilter.innerHTML = '<option value="all">All Categories</option>';
   const categories = [...new Set(quotes.map(quote => quote.category))];
@@ -91,7 +91,7 @@ function importFromJsonFile(event) {
     const importedQuotes = JSON.parse(event.target.result);
     quotes.push(...importedQuotes);
     saveQuotes();
-    populateCategoryFilter();
+    populateCategories();
     alert('Quotes imported successfully!');
   };
   fileReader.readAsText(event.target.files[0]);
@@ -100,6 +100,6 @@ function importFromJsonFile(event) {
 document.getElementById('newQuote').addEventListener('click', showRandomQuote);
 document.getElementById('exportJson').addEventListener('click', exportToJsonFile);
 
-populateCategoryFilter();
+populateCategories();
 createAddQuoteForm();
 showRandomQuote();
