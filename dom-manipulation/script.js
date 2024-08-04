@@ -1,5 +1,23 @@
 const SERVER_URL = 'https://jsonplaceholder.typicode.com/posts';
 
+let quotes = JSON.parse(localStorage.getItem('quotes')) || [
+  { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
+  { text: "Do not wait to strike till the iron is hot; but make it hot by striking.", category: "Action" },
+  { text: "Great things never came from comfort zones.", category: "Inspiration" }
+];
+
+function saveQuotes() {
+  localStorage.setItem('quotes', JSON.stringify(quotes));
+}
+
+function saveLastSelectedCategory(category) {
+  localStorage.setItem('lastSelectedCategory', category);
+}
+
+function getLastSelectedCategory() {
+  return localStorage.getItem('lastSelectedCategory') || 'all';
+}
+
 async function fetchQuotesFromServer() {
   try {
     const response = await fetch(SERVER_URL);
